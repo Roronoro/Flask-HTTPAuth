@@ -234,7 +234,7 @@ class HTTPBasicAuth(HTTPAuth):
         return Authorization(
             scheme, {'username': username, 'password': password})
 
-    def authenticate(self, auth, stored_password):
+    def authenticate(self, auth, stored_password, **view_kwargs):
         if auth:
             username = auth.username
             client_password = auth.password
@@ -242,7 +242,7 @@ class HTTPBasicAuth(HTTPAuth):
             username = ""
             client_password = ""
         if self.verify_password_callback:
-            return self.ensure_sync(self.verify_password_callback)(
+            return self.ensure_sync(self.verify_password_callback, **view_kwargs)(
                 username, client_password)
         if not auth:
             return
@@ -352,7 +352,7 @@ class HTTPDigestAuth(HTTPAuth):
                 self.scheme, self.realm, nonce,
                 opaque)
 
-    def authenticate(self, auth, stored_password_or_ha1):
+    def authenticate(self, auth, stored_password_or_ha1, **view_kwargs):
         if not auth or not auth.username or not auth.realm or not auth.uri \
                 or not auth.nonce or not auth.response \
                 or not stored_password_or_ha1:
@@ -392,10 +392,10 @@ class HTTPTokenAuth(HTTPAuth):
         self.verify_token_callback = f
         return f
 
-    def authenticate(self, auth, stored_password):
+    def authenticate(self, auth, stored_password, **view_kwargs):
         token = getattr(auth, 'token', '')
         if self.verify_token_callback:
-            return self.ensure_sync(self.verify_token_callback)(token)
+            return self.ensure_sync(self.verify_token_callback)(token, **view_kwargs)
 
 
 class MultiAuth(object):
