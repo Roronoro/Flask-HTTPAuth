@@ -158,7 +158,7 @@ class HTTPAuth(object):
                     password = self.get_auth_password(auth)
 
                     status = None
-                    user = self.authenticate(auth, password)
+                    user = self.authenticate(auth, password, **kwargs)
                     if user in (False, None):
                         status = 401
                     elif not self.authorize(role, user, auth):
