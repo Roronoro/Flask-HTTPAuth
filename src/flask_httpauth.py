@@ -242,8 +242,8 @@ class HTTPBasicAuth(HTTPAuth):
             username = ""
             client_password = ""
         if self.verify_password_callback:
-            return self.ensure_sync(self.verify_password_callback, **view_kwargs)(
-                username, client_password)
+            return self.ensure_sync(self.verify_password_callback)(
+                username, client_password, **view_kwargs)
         if not auth:
             return
         if self.hash_password_callback:
